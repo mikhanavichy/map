@@ -28,9 +28,12 @@
 ymaps.ready(function () {
   var EMPTY = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
-  // Границы тайлов по зумам: [minX, maxX, minY, maxY]. ЗАПОЛНИТЕ по папке tiles.
-  var TILE_RANGE = {
-    // 17: [75616, 75620, 42351, 42361],
+   var TILE_RANGE = {
+    13: [4725, 4726, 2646, 2647],
+    14: [9451, 9452, 5293, 5295],
+    15: [18903, 18905, 10587, 10590],
+    16: [37807, 37810, 21175, 21180],
+    17: [75614, 75621, 42351, 42360],
   };
 
   var map = new ymaps.Map('map', {
