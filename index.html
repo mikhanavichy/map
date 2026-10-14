@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ст. Михановичи, 1944</title>
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=d1e52c47-41ad-4394-94fa-983d0e73225f&lang=ru_RU"></script>
+  <style>
+    html, body, #map { width: 100%; height: 100%; margin: 0; padding: 0; }
+    #opacityBox {
+      position: absolute; top: 10px; left: 60px; z-index: 1000;
+      background:rgba(255,255,255,.9); padding: 8px 12px;
+      border-radius: 6px; font: 14px sans-serif;
+      box-shadow: 0 1px 4px rgba(0,0,0,.3);
+    }
+    #opacityBox input { width: 160px; vertical-align: middle; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<div id="opacityBox">
+  Снимок 1944:
+  <input type="range" id="opacity" min="0" max="100" value="100">
+  <span id="opacityVal">100%</span>
+</div>
+
+<script>
+ymaps.ready(function () {
+  var EMPTY = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+
+  // Границы тайлов по зумам: [minX, maxX, minY, maxY]. ЗАПОЛНИТЕ по папке tiles.
+  var TILE_RANGE = {
+    // 17: [75616, 75620, 42351, 42361],
+  };
+
+  var map = new ymaps.Map('map', {
+    center: [53.741978, 27.689329],
+    zoom: 15,
+    type: 'yandex#satellite',
+    controls: ['zoomControl', 'typeSelector', 'fullscreenControl']
+  });
+
+  var layer = new ymaps.Layer(
+    function (tile, zoom) {
+      var r = TILE_RANGE[zoom];
+      if (r && (tile[0] < r[0] || tile[0] > r[1] || tile[1] < r[2] || tile[1] > r[3])) {
+        return EMPTY;
+      }
+      return 'tiles/' + zoom + '/' + tile[0] + '/' + tile[1] + '.png';
+    },
+    { tileTransparent: true, zIndex: 2000, opacity: 1 }
+  );
+
+  var btn = new ymaps.control.Button({
+    data: { content: 'ст. Михановичи 1944' },
+    options: { selectOnClick: true, maxWidth: 160 }
+  });
+  btn.events
+    .add('select',   function () { map.layers.add(layer); })
+    .add('deselect', function () { map.layers.remove(layer); });
+  map.controls.add(btn, { float: 'right' });
+  btn.select();
+
+  var slider = document.getElementById('opacity');
+  var label = document.getElementById('opacityVal');
+  slider.addEventListener('input', function () {
+    var v = slider.value / 100;
+    layer.options.set('opacity', v);
+    var c = document.querySelectorAll('#map canvas')[1]; if (c) c.style.opacity = v;
+    label.textContent = slider.value + '%';
+  });
+});
+</script>
+</body>
+</html>
