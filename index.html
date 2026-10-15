@@ -26,7 +26,12 @@
 
 <script>
 ymaps.ready(function () {
-  var EMPTY = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+var EMPTY = (function () {
+  var c = document.createElement('canvas');
+  c.width = 1;
+  c.height = 1;
+  return c.toDataURL('image/png'); // чистый холст = полностью прозрачный пиксель
+})();
 
    var TILE_RANGE = {
     13: [4725, 4726, 2646, 2647],
@@ -41,6 +46,9 @@ ymaps.ready(function () {
     zoom: 15,
     type: 'yandex#satellite',
     controls: ['zoomControl', 'typeSelector', 'fullscreenControl']
+  }, {
+    restrictMapArea: [[53.652, 27.537], [53.832, 27.841]],
+    minZoom: 13
   });
 
   var layer = new ymaps.Layer(
